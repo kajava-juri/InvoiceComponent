@@ -1,0 +1,58 @@
+#root {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+}
+
+.main {
+
+    width: 50%;
+    height: 100%;
+}
+
+.header{
+    display: flex;
+    flex-direction: column;
+}
+
+.headerInput{
+    width: 100%;
+    padding: 12px 20px;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+.headerInputGroup{
+    margin-bottom: 8px;
+}
+
+.invoiceLines{
+    display: flex;
+    flex-direction: column;
+}
+
+.invoiceLine{
+    border: solid;
+    border-width: 1px;
+}
+
+header, .row {
+    display: flex;
+}
+  
+.col {
+    flex: 1;
+    padding-left: 8px;
+}
+
+.invoiceFooter{
+    display: flex;
+    flex-direction: column;
+}
+
+.errorMessage{
+    color: red;
+}
