@@ -14,6 +14,7 @@ export default function Invoice(){
         description: "",
         quantity: 1,
         price: 0.00,
+        error: "",
         total: function(){
             return this.quantity * this.price;
         }
@@ -40,7 +41,7 @@ export default function Invoice(){
     }
 
     function handleLineChange(event){
-        let id = event.target.parentElement.getAttribute("lineid");
+        let id = event.target.parentElement.parentElement.getAttribute("lineid");
         id = parseInt(id);
         const { name, value } = event.target;
 
@@ -58,9 +59,13 @@ export default function Invoice(){
     }
 
     function handleCreateLine(){
-        //console.log(invoiceLineId);
         setinvoiceLines([...invoiceLines, {...invoiceLine, id: invoiceLines.length + 1}]);
-        //console.log(invoiceLines);
+    }
+
+    function handleDeleteLine(event){
+        let id = event.target.parentElement.parentElement.getAttribute("lineid");
+        id = parseInt(id);
+        setinvoiceLines(invoiceLines.filter(l => l.id !== id));
     }
 
     function calculateTotalSum(){
@@ -76,30 +81,36 @@ export default function Invoice(){
     }, [invoiceLines])
 
     function handleSubmit(event){
+        let nameError = "";
         if(clientName.length > 32){
-            invoiceErrors.clientName = "Name must be less than 32 characters";
+            nameError = "Name must be less than 32 characters";
         }
-        
+        let invoiceLinerrors = [];
         invoiceLines.forEach(line => {
+            let lineErrors = {};
             if(line.description.length > 32){
-                invoiceErrors.description = "Description must be less than 32 chatacters";
+                lineErrors.description = "Description must be less than 32 characters";
             }
             if(line.price.length > 8){
-                invoiceErrors.price = "Price must be less than 8 digits";
+                lineErrors.price = "Price must be less than 8 digits";
             }
             if(line.quantity.length > 8){
-                invoiceErrors.quantity = "Quantity must be less than 8 digits";
+                lineErrors.quantity = "Quantity must be less than 8 digits";
             }
-            if(line.total.length > 8){
-                invoiceErrors.total = "Total must be less than 8 digits";
+            if(line.total().length > 8){
+                lineErrors.total = "Total must be less than 8 digits";
             }
+            let invalid = Object.keys(lineErrors).length === 0;
+            if(!invalid){
+                invoiceLinerrors.push(lineErrors);
+            }
+
         });
-        if(invoiceErrors.inValid){
-            console.log(invoiceErrors);
-            return;
-        } else{
-            alert("Success");
-        }
+        console.log(invoiceLinerrors.length);
+
+        //make a modal to display invalid fields
+        setInvoiceErrors({clientName: nameError, invoiceLines: invoiceLinerrors});
+        //console.log(invoiceLinerrors);
     }
 
     return (
@@ -123,31 +134,44 @@ export default function Invoice(){
                     <input id='dueDate' type={"date"} className='headerInput' readOnly={true} value={dueDateString}></input>
                 </div>
             </div>
-            <div className='invoiceLines'>
+            <div className='container'>
                 <h3>Invoice lines</h3>
                 <hr style={{width: "100%"}}/>
                 <button onClick={handleCreateLine}>+</button>
-                <div className='invoiceLine'>
-                    <header style={{marginTop: 8, marginBottom: 8}}>
-                        <div className='col'>Description</div>
-                        <div className='col'>Price</div>
-                        <div className='col'>Quantity</div>
-                        <div className='col'>Total</div>
-                    </header>
-                    {invoiceLines && invoiceLines.map((line, i) => {
+                <div className='row'>
+                    <div className='col-md-1'></div>
+                    <div className='col-md-5'>Description</div>
+                    <div className='col-md-2'>Price</div>
+                    <div className='col-md-2'>Quantity</div>
+                    <div className='col-md-2'>Total</div>
+                </div>
+                {invoiceLines && invoiceLines.map((line, i) => {
                         return (
                             <div key={i} lineid={line.id} className='row'>
-                                <input type={"text"} className='col' name='description' value={line.description} onChange={handleLineChange}></input>
-                                <input type={"number"} className='col' name='price' value={line.price} onChange={handleLineChange}></input>
-                                <input type={"number"} className='col' name='quantity' value={line.quantity} onChange={handleLineChange}></input>
-                                <p className='col'>{line.total()}</p>
+                                <div className='col-md-1 p-0'>
+                                    <button style={{width: "100%"}} onClick={handleDeleteLine}>-</button>
+                                </div>
+                                <div className='col-md-5 p-0'>
+                                    <input type={"text"}  name='description' value={line.description} onChange={handleLineChange} style={{width: "100%"}}></input>
+                                </div>
+                                <div className='col-md-2 p-0'>
+                                    <input type={"number"}  name='price' value={line.price} onChange={handleLineChange} style={{width: "100%"}}></input>
+                                    <p>terst</p>
+                                </div>
+                                <div className='col-md-2 p-0'>
+                                    <input type={"number"}  name='quantity' value={line.quantity} onChange={handleLineChange} style={{width: "100%"}}></input>
+                                    <p>terst</p>
+                                </div>
+                                <div className='col-md-2 p-0'>
+                                    <p style={{width: "100%"}}>{line.total()}</p>
+                                    <p>terst</p>
+                                </div>
                             </div>
                         )
                     })}
-                </div>
             </div>
             <div className='invoiceFooter'>
-                <p style={{alignSelf: "flex-end"}}>{totalSum}</p>
+                <p style={{alignSelf: "flex-start"}}>{totalSum}</p>
                 <button style={{width: 100, height: 50, marginLeft: 32}} onClick={handleSubmit}>Save</button>
             </div>
         </div>

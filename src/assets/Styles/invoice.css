@@ -29,28 +29,15 @@
     margin-bottom: 8px;
 }
 
-.invoiceLines{
-    display: flex;
-    flex-direction: column;
-}
-
 .invoiceLine{
     border: solid;
     border-width: 1px;
 }
 
-header, .row {
-    display: flex;
-}
-  
-.col {
-    flex: 1;
-    padding-left: 8px;
-}
-
 .invoiceFooter{
     display: flex;
     flex-direction: column;
+    margin-top: 32px;
 }
 
 .errorMessage{
