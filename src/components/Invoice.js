@@ -195,7 +195,7 @@ export default function Invoice(){
             </div>
             <div className='invoiceFooter'>
                 <p style={{alignSelf: "flex-start"}}>{totalSum}</p>
-                <button style={{width: 100, height: 50, marginLeft: 32}} onClick={handleSubmit}>Save</button>
+                <button style={{width: 100, height: 50, marginLeft: 32}} onClick={handleSubmit}>Salvesta</button>
             </div>
         </div>
     )
