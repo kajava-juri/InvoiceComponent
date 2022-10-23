@@ -84,7 +84,7 @@ export default function Invoice(){
     }, [invoiceLines])
 
     useEffect(() => {
-        setinvoiceLines([...invoiceLines, {...invoiceLine, id: invoiceLines.length + 1}]);
+        //setinvoiceLines([...invoiceLines, {...invoiceLine, id: invoiceLines.length + 1}]);
     }, [])
 
     function handleSubmit(event){
@@ -132,7 +132,7 @@ export default function Invoice(){
         if(invoiceValid){
             alert("Salvestamine õnnestus");
         } else {
-            alert("Palun uuenda veateatega märgitud väljad");
+            alert("Palun uuenda punase värviga märgitud veateatega väljad");
         }
 
 
@@ -148,15 +148,15 @@ export default function Invoice(){
                     <hr/>
 
                     <div className='headerInputGroup'>
-                        <label htmlFor='name'>Nimi</label>
+                        <label htmlFor='name' style={{fontWeight: "bold"}}>Nimi</label>
                         <input type={"text"} id="name" className='headerInput' name='clientName' onChange={handleNameChange} value={clientName} ></input>
                         <span className='errorMessage'>{nameError}</span>
                     </div>
 
-                    <label htmlFor='date'>Kuupäev</label>
+                    <label htmlFor='date' style={{fontWeight: "bold"}}>Kuupäev</label>
                     <input type={"date"} id="date" className='headerInput' defaultValue={currentDateString} onChange={handleDateChange}></input>
 
-                    <label htmlFor='dueDate'>Maksetähtpäev</label>
+                    <label htmlFor='dueDate' style={{fontWeight: "bold"}}>Maksetähtpäev</label>
                     <input id='dueDate' type={"date"} className='headerInput' readOnly={true} value={dueDateString}></input>
                 </div>
             </div>
@@ -166,10 +166,22 @@ export default function Invoice(){
                 <button onClick={handleCreateLine}>+</button>
                 <div className='row'>
                     <div className='col-md-1'></div>
-                    <div className='col-md-5'>Kirjeldus</div>
-                    <div className='col-md-2'>Hind</div>
-                    <div className='col-md-2'>Kogus</div>
-                    <div className='col-md-2'>Summa</div>
+                    <div className='col-md-5'>
+                        <p style={{fontWeight: "bold", margin: 0}}>Kirjeldus</p> 
+                        <p>max 32 tähemärki</p>
+                    </div>
+                    <div className='col-md-2'>
+                        <p style={{fontWeight: "bold", margin: 0}}>Hind</p>
+                        <p>max 8 tähemärki</p>
+                    </div>
+                    <div className='col-md-2'>
+                        <p style={{fontWeight: "bold", margin: 0}}>Hind</p>
+                        <p>max 8 tähemärki</p>
+                    </div>
+                    <div className='col-md-2'>
+                        <p style={{fontWeight: "bold", margin: 0}}>Summa</p>
+                        <p>max 8 tähemärki</p>
+                    </div>
                 </div>
                 {invoiceLines && invoiceLines.map((line, i) => {
                         return (
