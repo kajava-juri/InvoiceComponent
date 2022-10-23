@@ -8,7 +8,7 @@ export default function Invoice(){
     let [nameError , setNameError] = useState("");
 
     let invoiceLine = {
-        id: 1,
+        id: null,
         description: "",
         quantity: 1,
         price: 0.00,
@@ -83,6 +83,10 @@ export default function Invoice(){
         calculateTotalSum();
     }, [invoiceLines])
 
+    useEffect(() => {
+        setinvoiceLines([...invoiceLines, {...invoiceLine, id: invoiceLines.length + 1}]);
+    }, [])
+
     function handleSubmit(event){
         let invoiceValid = true;
         if(clientName.length > 32){
@@ -139,8 +143,8 @@ export default function Invoice(){
         <div className='main'>
             <div className='header'>
                 <h2 style={{fontSize: 32}}>Arve</h2>
-                <div style={{width: "100%"}}>
-                    <h3>Klient</h3>
+                <div style={{width: "100%", marginTop: 32}}>
+                    <h3>Arve päis</h3>
                     <hr/>
 
                     <div className='headerInputGroup'>
@@ -156,7 +160,7 @@ export default function Invoice(){
                     <input id='dueDate' type={"date"} className='headerInput' readOnly={true} value={dueDateString}></input>
                 </div>
             </div>
-            <div className='container'>
+            <div className='container' style={{marginTop: 32, padding: 0}}>
                 <h3>Arveread</h3>
                 <hr style={{width: "100%"}}/>
                 <button onClick={handleCreateLine}>+</button>
