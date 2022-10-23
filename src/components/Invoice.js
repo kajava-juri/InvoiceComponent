@@ -138,9 +138,9 @@ export default function Invoice(){
     return (
         <div className='main'>
             <div className='header'>
-                <h2 style={{fontSize: 32}}>Invoice</h2>
+                <h2 style={{fontSize: 32}}>Arve</h2>
                 <div style={{width: "100%"}}>
-                    <h3>Client</h3>
+                    <h3>Klient</h3>
                     <hr/>
 
                     <div className='headerInputGroup'>
