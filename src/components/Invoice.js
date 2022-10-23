@@ -186,7 +186,7 @@ export default function Invoice(){
                                     <p className='errorMessage'>{line.errors.quantity}</p>
                                 </div>
                                 <div className='col-md-2 p-0'>
-                                    <p style={{width: "100%"}}>{line.total()}</p>
+                                    <p style={{width: "100%", padding: 8}}>{line.total()}</p>
                                     <p className='errorMessage'>{line.errors.total}</p>
                                 </div>
                             </div>
@@ -194,7 +194,8 @@ export default function Invoice(){
                     })}
             </div>
             <div className='invoiceFooter'>
-                <p style={{alignSelf: "flex-start"}}>{totalSum}</p>
+                <p>Kogusumma: <span style={{alignSelf: "flex-start"}}>{totalSum}</span></p>
+
                 <button style={{width: 100, height: 50, marginLeft: 32}} onClick={handleSubmit}>Salvesta</button>
             </div>
         </div>
