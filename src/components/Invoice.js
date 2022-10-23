@@ -1,26 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import '../assets/Styles/invoice.css'
+import _ from "lodash";
 
 export default function Invoice(){
     let [clientName, setClientName] = useState("");
     let [totalSum, setTotalSum] = useState(0);
-    let [invoiceErrors, setInvoiceErrors] = useState({
-        clientName: "",
-        invoiceLines: []
-    });
+    let [nameError , setNameError] = useState("");
 
     let invoiceLine = {
         id: 1,
         description: "",
         quantity: 1,
         price: 0.00,
-        error: "",
+        errors: {
+            description: "",
+            quantity: "",
+            price: "",
+            total: ""
+        },
         total: function(){
             return this.quantity * this.price;
         }
     }
     
-    let [invoiceLines, setinvoiceLines] = useState([{...invoiceLine, id: 1}]);
+    let [invoiceLines, setinvoiceLines] = useState([]);
 
     const current = new Date();
     const dueDate = new Date();
@@ -81,35 +84,54 @@ export default function Invoice(){
     }, [invoiceLines])
 
     function handleSubmit(event){
-        let nameError = "";
+        let invoiceValid = true;
         if(clientName.length > 32){
-            nameError = "Name must be less than 32 characters";
+            setNameError("Nimi peab olema vähem kui 32 tähemärki");
+            invoiceValid = false;
+        } else {
+            setNameError("");
         }
-        let invoiceLinerrors = [];
-        invoiceLines.forEach(line => {
-            let lineErrors = {};
+        let updatedInvoiceLines = _.cloneDeep(invoiceLines);
+        updatedInvoiceLines.forEach(line => {
             if(line.description.length > 32){
-                lineErrors.description = "Description must be less than 32 characters";
+                line.errors.description = "Kirjeldus peab olema vähem kui 32 tähemärki";
+            } else {
+                line.errors.description = "";
             }
             if(line.price.length > 8){
-                lineErrors.price = "Price must be less than 8 digits";
+                line.errors.price = "Hind peab olema vähem kui 8 tähemärki";
+            } else {
+                line.errors.price = "";
             }
             if(line.quantity.length > 8){
-                lineErrors.quantity = "Quantity must be less than 8 digits";
+                line.errors.quantity = "Kogus peab olema vähem kui 8 tähemärki";
+            } else {
+                line.errors.quantity = "";
             }
-            if(line.total().length > 8){
-                lineErrors.total = "Total must be less than 8 digits";
+            if(line.total().toString().length > 8){
+                line.errors.total = "Summa peab olema vähem kui 8 tähemärki";
+            } else {
+                line.errors.total = "";
             }
-            let invalid = Object.keys(lineErrors).length === 0;
-            if(!invalid){
-                invoiceLinerrors.push(lineErrors);
+            let valid = Object.values(line.errors).every(l => l === "");
+            if(!valid && invoiceValid === true){
+                invoiceValid = false;
             }
 
         });
-        console.log(invoiceLinerrors.length);
+        console.log(updatedInvoiceLines);
 
         //make a modal to display invalid fields
-        setInvoiceErrors({clientName: nameError, invoiceLines: invoiceLinerrors});
+
+        setinvoiceLines(updatedInvoiceLines);
+
+        if(invoiceValid){
+            alert("Salvestamine õnnestus");
+        } else {
+            alert("Palun uuenda veateatega märgitud väljad");
+        }
+
+
         //console.log(invoiceLinerrors);
     }
 
@@ -122,28 +144,28 @@ export default function Invoice(){
                     <hr/>
 
                     <div className='headerInputGroup'>
-                        <label htmlFor='name'>Name</label>
+                        <label htmlFor='name'>Nimi</label>
                         <input type={"text"} id="name" className='headerInput' name='clientName' onChange={handleNameChange} value={clientName} ></input>
-                        <span className='errorMessage'>{invoiceErrors.clientName}</span>
+                        <span className='errorMessage'>{nameError}</span>
                     </div>
 
-                    <label htmlFor='date'>Date</label>
+                    <label htmlFor='date'>Kuupäev</label>
                     <input type={"date"} id="date" className='headerInput' defaultValue={currentDateString} onChange={handleDateChange}></input>
 
-                    <label htmlFor='dueDate'>Payment due date</label>
+                    <label htmlFor='dueDate'>Maksetähtpäev</label>
                     <input id='dueDate' type={"date"} className='headerInput' readOnly={true} value={dueDateString}></input>
                 </div>
             </div>
             <div className='container'>
-                <h3>Invoice lines</h3>
+                <h3>Arveread</h3>
                 <hr style={{width: "100%"}}/>
                 <button onClick={handleCreateLine}>+</button>
                 <div className='row'>
                     <div className='col-md-1'></div>
-                    <div className='col-md-5'>Description</div>
-                    <div className='col-md-2'>Price</div>
-                    <div className='col-md-2'>Quantity</div>
-                    <div className='col-md-2'>Total</div>
+                    <div className='col-md-5'>Kirjeldus</div>
+                    <div className='col-md-2'>Hind</div>
+                    <div className='col-md-2'>Kogus</div>
+                    <div className='col-md-2'>Summa</div>
                 </div>
                 {invoiceLines && invoiceLines.map((line, i) => {
                         return (
@@ -153,18 +175,19 @@ export default function Invoice(){
                                 </div>
                                 <div className='col-md-5 p-0'>
                                     <input type={"text"}  name='description' value={line.description} onChange={handleLineChange} style={{width: "100%"}}></input>
+                                    <p className='errorMessage'>{line.errors.description}</p>
                                 </div>
                                 <div className='col-md-2 p-0'>
                                     <input type={"number"}  name='price' value={line.price} onChange={handleLineChange} style={{width: "100%"}}></input>
-                                    <p>terst</p>
+                                    <p className='errorMessage'>{line.errors.price}</p>
                                 </div>
                                 <div className='col-md-2 p-0'>
                                     <input type={"number"}  name='quantity' value={line.quantity} onChange={handleLineChange} style={{width: "100%"}}></input>
-                                    <p>terst</p>
+                                    <p className='errorMessage'>{line.errors.quantity}</p>
                                 </div>
                                 <div className='col-md-2 p-0'>
                                     <p style={{width: "100%"}}>{line.total()}</p>
-                                    <p>terst</p>
+                                    <p className='errorMessage'>{line.errors.total}</p>
                                 </div>
                             </div>
                         )
