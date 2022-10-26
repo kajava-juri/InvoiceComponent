@@ -7,6 +7,8 @@ export default function Invoice(){
     let [totalSum, setTotalSum] = useState(0);
     let [nameError , setNameError] = useState("");
 
+    let [uniqueId, setUniqueId] = useState(1);
+
     let invoiceLine = {
         id: null,
         description: "",
@@ -62,7 +64,9 @@ export default function Invoice(){
     }
 
     function handleCreateLine(){
-        setinvoiceLines([...invoiceLines, {...invoiceLine, id: invoiceLines.length + 1}]);
+        setinvoiceLines([...invoiceLines, {...invoiceLine, id: uniqueId}]);
+        let newId = uniqueId + 1;
+        setUniqueId(newId);
     }
 
     function handleDeleteLine(event){
@@ -82,10 +86,6 @@ export default function Invoice(){
     useEffect(() => {
         calculateTotalSum();
     }, [invoiceLines])
-
-    useEffect(() => {
-        //setinvoiceLines([...invoiceLines, {...invoiceLine, id: invoiceLines.length + 1}]);
-    }, [])
 
     function handleSubmit(event){
         let invoiceValid = true;
